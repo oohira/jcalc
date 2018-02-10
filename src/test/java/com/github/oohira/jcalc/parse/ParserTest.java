@@ -34,12 +34,48 @@ public class ParserTest {
     }
 
     @Test
-    public void parse2Factors() {
+    public void parseAddition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_PLUS, "+"), new Token(NUMBER, "2"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parse();
+        assertThat(n.getOperator(), is(OP_PLUS));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getLeftOperand().eval(), is(new BigDecimal("1")));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand().eval(), is(new BigDecimal("2")));
+        assertThat(n.eval(), is(new BigDecimal("3")));
+    }
+
+    @Test
+    public void parseAdditionSubtraction() {
+        Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
+                new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
+                new Token(OP_MINUS, "-"), new Token(NUMBER, "5"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parse();
+        assertThat(n.getOperator(), is(OP_MINUS));
+        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(new BigDecimal("7")));
+
+        BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
+        assertThat(left.getOperator(), is(OP_PLUS));
+        assertThat(left.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(left.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(left.eval(), is(new BigDecimal("12")));
+    }
+
+    @Test
+    public void parseMultiplication() {
         Tokenizer tokenizer = new Tokenizer(
                 new Token(NUMBER, "1"), new Token(OP_MULTI, "*"), new Token(NUMBER, "2"));
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
+        assertThat(n.getOperator(), is(OP_MULTI));
         assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
         assertThat(n.getLeftOperand().eval(), is(new BigDecimal("1")));
         assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
@@ -48,7 +84,7 @@ public class ParserTest {
     }
 
     @Test
-    public void parse3Factors() {
+    public void parseMultiplicationDivision() {
         Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
                 new Token(OP_MULTI, "*"), new Token(NUMBER, "2"),
                 new Token(OP_DIV, "/"), new Token(NUMBER, "5"));
@@ -68,29 +104,29 @@ public class ParserTest {
     }
 
     @Test
-    public void parse4Factors() {
+    public void parseAdditionMultiplication() {
         Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
-                new Token(OP_MULTI, "*"), new Token(NUMBER, "2"),
-                new Token(OP_DIV, "/"), new Token(NUMBER, "5"),
-                new Token(OP_MULTI, "*"), new Token(NUMBER, "3"));
+                new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
+                new Token(OP_MULTI, "*"), new Token(NUMBER, "5"),
+                new Token(OP_PLUS, "+"), new Token(NUMBER, "3"));
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_MULTI));
+        assertThat(n.getOperator(), is(OP_PLUS));
         assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
         assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
-        assertThat(n.eval(), is(new BigDecimal("12")));
+        assertThat(n.eval(), is(new BigDecimal("23")));
 
         BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
-        assertThat(left.getOperator(), is(OP_DIV));
-        assertThat(left.getLeftOperand(), instanceOf(BinaryOpNode.class));
-        assertThat(left.getRightOperand(), instanceOf(NumberNode.class));
-        assertThat(left.eval(), is(new BigDecimal("4")));
+        assertThat(left.getOperator(), is(OP_PLUS));
+        assertThat(left.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(left.getRightOperand(), instanceOf(BinaryOpNode.class));
+        assertThat(left.eval(), is(new BigDecimal("20")));
 
-        BinaryOpNode left2 = (BinaryOpNode) left.getLeftOperand();
-        assertThat(left2.getOperator(), is(OP_MULTI));
-        assertThat(left2.getLeftOperand(), instanceOf(NumberNode.class));
-        assertThat(left2.getRightOperand(), instanceOf(NumberNode.class));
-        assertThat(left2.eval(), is(new BigDecimal("20")));
+        BinaryOpNode right = (BinaryOpNode) left.getRightOperand();
+        assertThat(right.getOperator(), is(OP_MULTI));
+        assertThat(right.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(right.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(right.eval(), is(new BigDecimal("10")));
     }
 }

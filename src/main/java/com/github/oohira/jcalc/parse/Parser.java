@@ -26,8 +26,25 @@ public class Parser {
      * @return 構文木.
      */
     public Node parse() {
-        Node term = parseTerm(this.tokenizer);
-        return term;
+        return parseExpression(this.tokenizer);
+    }
+
+    /**
+     * 式をパースする.
+     *
+     * EXPRESSION := TERM { ("+"|"-") TERM }
+     *
+     * @return 式ノード.
+     */
+    Node parseExpression(final Tokenizer tokenizer) {
+        Node expression = parseTerm(tokenizer);
+        while (tokenizer.hasNext() &&
+                (tokenizer.peek().getType() == OP_PLUS || tokenizer.peek().getType() == OP_MINUS)) {
+            Token op = tokenizer.next();
+            Node term = parseTerm(tokenizer);
+            expression = new BinaryOpNode(op.getType(), expression, term);
+        }
+        return expression;
     }
 
     /**
