@@ -43,4 +43,25 @@ public class TokenizerTest {
             assertTrue(true);
         }
     }
+
+    @Test
+    public void peek() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(STRING, "2"));
+
+        assertThat(tokenizer.peek().getText(), is("1"));
+        assertThat(tokenizer.peek().getText(), is("1"));
+
+        tokenizer.next();
+        assertThat(tokenizer.peek().getText(), is("2"));
+        assertThat(tokenizer.peek().getText(), is("2"));
+
+        tokenizer.next();
+        try {
+            tokenizer.peek();
+            fail("should throw a NoSuchElementException");
+        } catch (NoSuchElementException e) {
+            assertTrue(true);
+        }
+    }
 }

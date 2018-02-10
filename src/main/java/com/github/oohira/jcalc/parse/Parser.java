@@ -5,6 +5,8 @@ import com.github.oohira.jcalc.token.Tokenizer;
 
 import java.util.Objects;
 
+import static com.github.oohira.jcalc.token.TokenType.*;
+
 /**
  * 構文解析器.
  *
@@ -24,7 +26,37 @@ public class Parser {
      * @return 構文木.
      */
     public Node parse() {
-        Token token = this.tokenizer.next();
+        Node term = parseTerm(this.tokenizer);
+        return term;
+    }
+
+    /**
+     * 項をパースする.
+     *
+     * TERM := FACTOR { ("*"|"/") FACTOR }
+     *
+     * @return 項ノード.
+     */
+    Node parseTerm(final Tokenizer tokenizer) {
+        Node term = parseFactor(tokenizer);
+        while (tokenizer.hasNext() &&
+                (tokenizer.peek().getType() == OP_MULTI || tokenizer.peek().getType() == OP_DIV)) {
+            Token op = tokenizer.next();
+            Node factor = parseFactor(tokenizer);
+            term = new BinaryOpNode(op.getType(), term, factor);
+        }
+        return term;
+    }
+
+    /**
+     * 因子をパースする.
+     *
+     * FACTOR := NUMBER | STRING
+     *
+     * @return 因子ノード.
+     */
+    Node parseFactor(final Tokenizer tokenizer) {
+        Token token = tokenizer.next();
         switch (token.getType()) {
             case NUMBER:
                 return new NumberNode(token);

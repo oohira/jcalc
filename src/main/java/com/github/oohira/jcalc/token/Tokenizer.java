@@ -40,4 +40,17 @@ public class Tokenizer implements Iterator<Token>, Iterable<Token> {
         }
         return this.tokens[this.current++];
     }
+
+    /**
+     * 先頭の要素を取得する（キューから取り出さない）.
+     *
+     * @return 要素.
+     * @throws NoSuchElementException 要素がない場合
+     */
+    public Token peek() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        return this.tokens[this.current];
+    }
 }
