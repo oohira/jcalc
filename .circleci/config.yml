@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk-browsers
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          keys:
+          - dependencies-{{ checksum "build.gradle" }}
+
+      - run: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: dependencies-{{ checksum "build.gradle" }}
+
+      - run: ./gradlew test
