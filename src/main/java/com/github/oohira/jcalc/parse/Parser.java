@@ -68,7 +68,7 @@ public class Parser {
     /**
      * 因子をパースする.
      *
-     * FACTOR := NUMBER | STRING
+     * FACTOR := NUMBER | STRING | "(" EXPRESSION ")"
      *
      * @return 因子ノード.
      */
@@ -79,6 +79,13 @@ public class Parser {
                 return new NumberNode(token);
             case STRING:
                 return new StringNode(token);
+            case PAREN_LEFT: {
+                Node expression = parseExpression(tokenizer);
+                if (tokenizer.next().getType() != PAREN_RIGHT) {
+                    throw new IllegalStateException();
+                }
+                return expression;
+            }
             default:
                 throw new IllegalStateException();
         }

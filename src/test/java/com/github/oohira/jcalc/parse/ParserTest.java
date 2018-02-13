@@ -105,6 +105,8 @@ public class ParserTest {
 
     @Test
     public void parseAdditionMultiplication() {
+        // 10 + 2 * 5 + 3
+        // -> (+ (+ 10 (* 2 5)) 3)
         Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
                 new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
                 new Token(OP_MULTI, "*"), new Token(NUMBER, "5"),
@@ -128,5 +130,38 @@ public class ParserTest {
         assertThat(right.getLeftOperand(), instanceOf(NumberNode.class));
         assertThat(right.getRightOperand(), instanceOf(NumberNode.class));
         assertThat(right.eval(), is(new BigDecimal("10")));
+    }
+
+    @Test
+    public void parseParentheses() {
+        // (10 + 2) * (5 + 3)
+        // -> (* (+ 10 2) (+ 5 3))
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(PAREN_LEFT, "("),
+                new Token(NUMBER, "10"), new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
+                new Token(PAREN_RIGHT, ")"),
+                new Token(OP_MULTI, "*"),
+                new Token(PAREN_LEFT, "("),
+                new Token(NUMBER, "5"), new Token(OP_PLUS, "+"), new Token(NUMBER, "3"),
+                new Token(PAREN_RIGHT, ")"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parse();
+        assertThat(n.getOperator(), is(OP_MULTI));
+        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
+        assertThat(n.getRightOperand(), instanceOf(BinaryOpNode.class));
+        assertThat(n.eval(), is(new BigDecimal("96")));
+
+        BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
+        assertThat(left.getOperator(), is(OP_PLUS));
+        assertThat(left.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(left.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(left.eval(), is(new BigDecimal("12")));
+
+        BinaryOpNode right = (BinaryOpNode) n.getRightOperand();
+        assertThat(right.getOperator(), is(OP_PLUS));
+        assertThat(right.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(right.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(right.eval(), is(new BigDecimal("8")));
     }
 }

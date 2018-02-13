@@ -20,6 +20,12 @@ public enum TokenType {
     /** 除算演算子 */
     OP_DIV,
 
+    /** 開き括弧 */
+    PAREN_LEFT,
+
+    /** 閉じ括弧 */
+    PAREN_RIGHT,
+
     /** 文字列 */
     STRING,
 }
