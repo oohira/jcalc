@@ -15,7 +15,7 @@ public class Tokenizer implements Iterator<Token>, Iterable<Token> {
     private int current = 0;
 
     /**
-     * TODO: 字句解析機を実装するまでテスト用で使うコンストラクタ
+     * TODO: 字句解析機を実装するまでテスト用で使うコンストラクタ.
      *
      * @param tokens トークン列
      */
