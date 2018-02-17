@@ -30,6 +30,23 @@ public class Parser {
     }
 
     /**
+     * 条件式をパースする.
+     *
+     * CONDITION := EXPRESSION ("=="|"!="|"<"|"<="|">"|">=") EXPRESSION
+     *
+     * @return 条件式ノード.
+     */
+    Node parseConditionalExpression(final Tokenizer tokenizer) {
+        Node left = parseExpression(tokenizer);
+        Token op = tokenizer.next();
+        if (!op.getType().isRelationalOperator()) {
+            throw new IllegalStateException();
+        }
+        Node right = parseExpression(tokenizer);
+        return new BinaryOpNode(op.getType(), left, right);
+    }
+
+    /**
      * 式をパースする.
      *
      * EXPRESSION := TERM { ("+"|"-") TERM }

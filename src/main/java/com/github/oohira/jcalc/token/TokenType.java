@@ -20,6 +20,12 @@ public enum TokenType {
     /** 除算演算子. */
     OP_DIV,
 
+    /** == 演算子. */
+    OP_EQUAL,
+
+    /** != 演算子. */
+    OP_NOT_EQUAL,
+
     /** 開き括弧. */
     PAREN_LEFT,
 
@@ -27,5 +33,15 @@ public enum TokenType {
     PAREN_RIGHT,
 
     /** 文字列. */
-    STRING,
+    STRING;
+
+    /**
+     * 比較演算子かどうか判定する.
+     *
+     * @return 比較演算子の場合は true.
+     */
+    public boolean isRelationalOperator() {
+        return this == OP_EQUAL
+                || this == OP_NOT_EQUAL;
+    }
 }

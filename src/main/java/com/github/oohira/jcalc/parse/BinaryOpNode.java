@@ -60,6 +60,10 @@ public class BinaryOpNode extends Node {
                 return lhs.multiply(rhs);
             case OP_DIV:
                 return lhs.divide(rhs);
+            case OP_EQUAL:
+                return lhs.equals(rhs);
+            case OP_NOT_EQUAL:
+                return !lhs.equals(rhs);
             default:
                 throw new IllegalStateException();
         }

@@ -164,4 +164,30 @@ public class ParserTest {
         assertThat(right.getRightOperand(), instanceOf(NumberNode.class));
         assertThat(right.eval(), is(new BigDecimal("8")));
     }
+
+    @Test
+    public void parseEqualCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_EQUAL, "=="), new Token(NUMBER, "2"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_EQUAL));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(false));
+    }
+
+    @Test
+    public void parseNotEqualCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_NOT_EQUAL, "!="), new Token(NUMBER, "2"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_NOT_EQUAL));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(true));
+    }
 }
