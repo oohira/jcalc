@@ -190,4 +190,56 @@ public class ParserTest {
         assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
         assertThat(n.eval(), is(true));
     }
+
+    @Test
+    public void parseLessCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_LESS, "<"), new Token(NUMBER, "1"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_LESS));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(false));
+    }
+
+    @Test
+    public void parseLessEqualCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_LESS_EQUAL, "<="), new Token(NUMBER, "1"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_LESS_EQUAL));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(true));
+    }
+
+    @Test
+    public void parseGreaterCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_GREATER, ">"), new Token(NUMBER, "1"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_GREATER));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(false));
+    }
+
+    @Test
+    public void parseGreaterEqualCondition() {
+        Tokenizer tokenizer = new Tokenizer(
+                new Token(NUMBER, "1"), new Token(OP_GREATER_EQUAL, ">="), new Token(NUMBER, "1"));
+        Parser parser = new Parser(tokenizer);
+
+        BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
+        assertThat(n.getOperator(), is(OP_GREATER_EQUAL));
+        assertThat(n.getLeftOperand(), instanceOf(NumberNode.class));
+        assertThat(n.getRightOperand(), instanceOf(NumberNode.class));
+        assertThat(n.eval(), is(true));
+    }
 }

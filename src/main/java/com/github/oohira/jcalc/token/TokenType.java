@@ -26,6 +26,18 @@ public enum TokenType {
     /** != 演算子. */
     OP_NOT_EQUAL,
 
+    /** < 演算子. */
+    OP_LESS,
+
+    /** <= 演算子. */
+    OP_LESS_EQUAL,
+
+    /** > 演算子. */
+    OP_GREATER,
+
+    /** <= 演算子. */
+    OP_GREATER_EQUAL,
+
     /** 開き括弧. */
     PAREN_LEFT,
 
@@ -42,6 +54,10 @@ public enum TokenType {
      */
     public boolean isRelationalOperator() {
         return this == OP_EQUAL
-                || this == OP_NOT_EQUAL;
+                || this == OP_NOT_EQUAL
+                || this == OP_LESS
+                || this == OP_LESS_EQUAL
+                || this == OP_GREATER
+                || this == OP_GREATER_EQUAL;
     }
 }

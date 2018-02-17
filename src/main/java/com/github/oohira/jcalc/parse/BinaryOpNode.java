@@ -64,6 +64,14 @@ public class BinaryOpNode extends Node {
                 return lhs.equals(rhs);
             case OP_NOT_EQUAL:
                 return !lhs.equals(rhs);
+            case OP_LESS:
+                return lhs.compareTo(rhs) < 0;
+            case OP_LESS_EQUAL:
+                return lhs.compareTo(rhs) <= 0;
+            case OP_GREATER:
+                return lhs.compareTo(rhs) > 0;
+            case OP_GREATER_EQUAL:
+                return lhs.compareTo(rhs) >= 0;
             default:
                 throw new IllegalStateException();
         }
