@@ -1,6 +1,5 @@
 package com.github.oohira.jcalc.parse;
 
-import com.github.oohira.jcalc.token.Token;
 import com.github.oohira.jcalc.token.Tokenizer;
 import org.junit.Test;
 
@@ -17,7 +16,7 @@ public class ParserTest {
 
     @Test
     public void parseNumber() {
-        Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "1"));
+        Tokenizer tokenizer = new Tokenizer("1");
         Parser parser = new Parser(tokenizer);
 
         NumberNode n = (NumberNode) parser.parse();
@@ -26,7 +25,7 @@ public class ParserTest {
 
     @Test
     public void parseString() {
-        Tokenizer tokenizer = new Tokenizer(new Token(STRING, "Hello"));
+        Tokenizer tokenizer = new Tokenizer("\"Hello\"");
         Parser parser = new Parser(tokenizer);
 
         StringNode n = (StringNode) parser.parse();
@@ -35,8 +34,7 @@ public class ParserTest {
 
     @Test
     public void parseAddition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_PLUS, "+"), new Token(NUMBER, "2"));
+        Tokenizer tokenizer = new Tokenizer("1 + 2");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -50,9 +48,7 @@ public class ParserTest {
 
     @Test
     public void parseAdditionSubtraction() {
-        Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
-                new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
-                new Token(OP_MINUS, "-"), new Token(NUMBER, "5"));
+        Tokenizer tokenizer = new Tokenizer("10 + 2 - 5");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -70,8 +66,7 @@ public class ParserTest {
 
     @Test
     public void parseMultiplication() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_MULTI, "*"), new Token(NUMBER, "2"));
+        Tokenizer tokenizer = new Tokenizer("1 * 2");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -85,9 +80,7 @@ public class ParserTest {
 
     @Test
     public void parseMultiplicationDivision() {
-        Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
-                new Token(OP_MULTI, "*"), new Token(NUMBER, "2"),
-                new Token(OP_DIV, "/"), new Token(NUMBER, "5"));
+        Tokenizer tokenizer = new Tokenizer("10 * 2 / 5");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -107,10 +100,7 @@ public class ParserTest {
     public void parseAdditionMultiplication() {
         // 10 + 2 * 5 + 3
         // -> (+ (+ 10 (* 2 5)) 3)
-        Tokenizer tokenizer = new Tokenizer(new Token(NUMBER, "10"),
-                new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
-                new Token(OP_MULTI, "*"), new Token(NUMBER, "5"),
-                new Token(OP_PLUS, "+"), new Token(NUMBER, "3"));
+        Tokenizer tokenizer = new Tokenizer("10 + 2 * 5 + 3");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -136,14 +126,7 @@ public class ParserTest {
     public void parseParentheses() {
         // (10 + 2) * (5 + 3)
         // -> (* (+ 10 2) (+ 5 3))
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(PAREN_LEFT, "("),
-                new Token(NUMBER, "10"), new Token(OP_PLUS, "+"), new Token(NUMBER, "2"),
-                new Token(PAREN_RIGHT, ")"),
-                new Token(OP_MULTI, "*"),
-                new Token(PAREN_LEFT, "("),
-                new Token(NUMBER, "5"), new Token(OP_PLUS, "+"), new Token(NUMBER, "3"),
-                new Token(PAREN_RIGHT, ")"));
+        Tokenizer tokenizer = new Tokenizer("(10 + 2) * (5 + 3)");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
@@ -167,8 +150,7 @@ public class ParserTest {
 
     @Test
     public void parseEqualCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_EQUAL, "=="), new Token(NUMBER, "2"));
+        Tokenizer tokenizer = new Tokenizer("1 == 2");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
@@ -180,8 +162,7 @@ public class ParserTest {
 
     @Test
     public void parseNotEqualCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_NOT_EQUAL, "!="), new Token(NUMBER, "2"));
+        Tokenizer tokenizer = new Tokenizer("1 != 2");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
@@ -193,8 +174,7 @@ public class ParserTest {
 
     @Test
     public void parseLessCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_LESS, "<"), new Token(NUMBER, "1"));
+        Tokenizer tokenizer = new Tokenizer("1 < 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
@@ -206,8 +186,7 @@ public class ParserTest {
 
     @Test
     public void parseLessEqualCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_LESS_EQUAL, "<="), new Token(NUMBER, "1"));
+        Tokenizer tokenizer = new Tokenizer("1 <= 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
@@ -219,8 +198,7 @@ public class ParserTest {
 
     @Test
     public void parseGreaterCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_GREATER, ">"), new Token(NUMBER, "1"));
+        Tokenizer tokenizer = new Tokenizer("1 > 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
@@ -232,8 +210,7 @@ public class ParserTest {
 
     @Test
     public void parseGreaterEqualCondition() {
-        Tokenizer tokenizer = new Tokenizer(
-                new Token(NUMBER, "1"), new Token(OP_GREATER_EQUAL, ">="), new Token(NUMBER, "1"));
+        Tokenizer tokenizer = new Tokenizer("1 >= 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);

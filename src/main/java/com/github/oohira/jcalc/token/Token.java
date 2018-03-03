@@ -1,5 +1,7 @@
 package com.github.oohira.jcalc.token;
 
+import java.util.Objects;
+
 /**
  * トークン.
  */
@@ -29,5 +31,28 @@ public class Token {
      */
     public String getText() {
         return text;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Token)) {
+            return false;
+        }
+        Token token = (Token) o;
+        return Objects.equals(type, token.type)
+                && Objects.equals(text, token.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, text);
+    }
+
+    @Override
+    public String toString() {
+        return "Token{" + type + ", " + text + "}";
     }
 }
