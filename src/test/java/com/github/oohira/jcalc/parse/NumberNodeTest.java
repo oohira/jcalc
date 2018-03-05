@@ -18,27 +18,20 @@ public class NumberNodeTest {
     public void zero() {
         Token token = new Token(NUMBER, "0");
         NumberNode n = new NumberNode(token);
-        assertThat(n.eval(), is(BigDecimal.ZERO));
+        assertThat(n.getValue(), is(BigDecimal.ZERO));
     }
 
     @Test
     public void one() {
         Token token = new Token(NUMBER, "1.0");
         NumberNode n = new NumberNode(token);
-        assertThat(n.eval(), is(new BigDecimal("1.0")));
-    }
-
-    @Test
-    public void ten() {
-        Token token = new Token(NUMBER, "10");
-        NumberNode n = new NumberNode(token);
-        assertThat(n.eval(), is(BigDecimal.TEN));
+        assertThat(n.getValue(), is(new BigDecimal("1.0")));
     }
 
     @Test
     public void pi() {
         Token token = new Token(NUMBER, "3.14159");
         NumberNode n = new NumberNode(token);
-        assertThat(n.eval(), is(new BigDecimal("3.14159")));
+        assertThat(n.getValue(), is(new BigDecimal("3.14159")));
     }
 }

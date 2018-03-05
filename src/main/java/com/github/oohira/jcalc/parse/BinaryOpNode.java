@@ -2,8 +2,6 @@ package com.github.oohira.jcalc.parse;
 
 import com.github.oohira.jcalc.token.TokenType;
 
-import java.math.BigDecimal;
-
 /**
  * 二項演算子を表すノード.
  */
@@ -17,6 +15,11 @@ public class BinaryOpNode extends Node {
         this.op = op;
         this.left = left;
         this.right = right;
+    }
+
+    @Override
+    public <T> T accept(final NodeVisitor<T> visitor) {
+        return visitor.visitBinaryOpNode(this);
     }
 
     /**
@@ -44,36 +47,5 @@ public class BinaryOpNode extends Node {
      */
     public Node getRightOperand() {
         return this.right;
-    }
-
-    @Override
-    public Object eval() {
-        BigDecimal lhs = (BigDecimal) this.left.eval();
-        BigDecimal rhs = (BigDecimal) this.right.eval();
-
-        switch (this.op) {
-            case OP_PLUS:
-                return lhs.add(rhs);
-            case OP_MINUS:
-                return lhs.subtract(rhs);
-            case OP_MULTI:
-                return lhs.multiply(rhs);
-            case OP_DIV:
-                return lhs.divide(rhs);
-            case OP_EQUAL:
-                return lhs.equals(rhs);
-            case OP_NOT_EQUAL:
-                return !lhs.equals(rhs);
-            case OP_LESS:
-                return lhs.compareTo(rhs) < 0;
-            case OP_LESS_EQUAL:
-                return lhs.compareTo(rhs) <= 0;
-            case OP_GREATER:
-                return lhs.compareTo(rhs) > 0;
-            case OP_GREATER_EQUAL:
-                return lhs.compareTo(rhs) >= 0;
-            default:
-                throw new IllegalStateException();
-        }
     }
 }

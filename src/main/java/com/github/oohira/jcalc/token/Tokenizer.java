@@ -90,7 +90,7 @@ public class Tokenizer implements Iterator<Token>, Iterable<Token> {
                 }
             } else if (isDigit(c)) {
                 int start = i;
-                while (isDigit(src.charAt(i + 1))) {
+                while (isDigit(src.charAt(i + 1)) || src.charAt(i + 1) == '.') {
                     i++;
                 }
                 tokens.add(new Token(NUMBER, src.substring(start, i + 1)));

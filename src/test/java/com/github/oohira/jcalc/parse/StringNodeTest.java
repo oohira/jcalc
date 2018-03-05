@@ -16,20 +16,20 @@ public class StringNodeTest {
     public void empty() {
         Token token = new Token(STRING, "");
         StringNode n = new StringNode(token);
-        assertThat(n.eval(), is(""));
+        assertThat(n.getValue(), is(""));
     }
 
     @Test
     public void word() {
         Token token = new Token(STRING, "Hello, World!");
         StringNode n = new StringNode(token);
-        assertThat(n.eval(), is("Hello, World!"));
+        assertThat(n.getValue(), is("Hello, World!"));
     }
 
     @Test
     public void quote() {
         Token token = new Token(STRING, "\"''\"");
         StringNode n = new StringNode(token);
-        assertThat(n.eval(), is("\"''\""));
+        assertThat(n.getValue(), is("\"''\""));
     }
 }

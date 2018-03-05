@@ -14,7 +14,16 @@ public class StringNode extends Node {
     }
 
     @Override
-    public Object eval() {
+    public <T> T accept(final NodeVisitor<T> visitor) {
+        return visitor.visitStringNode(this);
+    }
+
+    /**
+     * 値を取得する.
+     *
+     * @return 値.
+     */
+    public String getValue() {
         return this.value;
     }
 }
