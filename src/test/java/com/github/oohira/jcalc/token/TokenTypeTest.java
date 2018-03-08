@@ -1,16 +1,16 @@
 package com.github.oohira.jcalc.token;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * {@link TokenType} のテストクラス.
  */
-public class TokenTypeTest {
+class TokenTypeTest {
 
     @Test
-    public void isRelationalOperator() {
+    void isRelationalOperator() {
         assertFalse(TokenType.OP_PLUS.isRelationalOperator());
         assertFalse(TokenType.OP_MINUS.isRelationalOperator());
         assertFalse(TokenType.OP_MULTI.isRelationalOperator());

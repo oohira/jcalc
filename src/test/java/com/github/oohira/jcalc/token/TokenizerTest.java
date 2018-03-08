@@ -1,39 +1,36 @@
 package com.github.oohira.jcalc.token;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static com.github.oohira.jcalc.token.TokenType.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * {@link Tokenizer} のテストクラス.
  */
-public class TokenizerTest {
+class TokenizerTest {
 
     @Test
-    public void iterator() {
+    void iterator() {
         Tokenizer tokenizer = new Tokenizer("1 \"2\"");
 
         Token token;
         Iterator<Token> it = tokenizer.iterator();
 
-        assertThat(it.hasNext(), is(true));
+        assertTrue(it.hasNext());
         token = it.next();
-        assertThat(token.getType(), is(NUMBER));
-        assertThat(token.getText(), is("1"));
+        assertEquals(NUMBER, token.getType());
+        assertEquals("1", token.getText());
 
-        assertThat(it.hasNext(), is(true));
+        assertTrue(it.hasNext());
         token = it.next();
-        assertThat(token.getType(), is(STRING));
-        assertThat(token.getText(), is("2"));
+        assertEquals(STRING, token.getType());
+        assertEquals("2", token.getText());
 
-        assertThat(it.hasNext(), is(false));
+        assertFalse(it.hasNext());
         try {
             it.next();
             fail("should throw a NoSuchElementException");
@@ -43,15 +40,15 @@ public class TokenizerTest {
     }
 
     @Test
-    public void peek() {
+    void peek() {
         Tokenizer tokenizer = new Tokenizer("1 \"2\"");
 
-        assertThat(tokenizer.peek().getText(), is("1"));
-        assertThat(tokenizer.peek().getText(), is("1"));
+        assertEquals("1", tokenizer.peek().getText());
+        assertEquals("1", tokenizer.peek().getText());
 
         tokenizer.next();
-        assertThat(tokenizer.peek().getText(), is("2"));
-        assertThat(tokenizer.peek().getText(), is("2"));
+        assertEquals("2", tokenizer.peek().getText());
+        assertEquals("2", tokenizer.peek().getText());
 
         tokenizer.next();
         try {
@@ -63,24 +60,24 @@ public class TokenizerTest {
     }
 
     @Test
-    public void scan() {
+    void scan() {
         Tokenizer tokenizer = new Tokenizer("(10 + 2) * (5-3/3)");
         Iterator<Token> it = tokenizer.iterator();
 
-        assertThat(it.hasNext(), is(true));
-        assertThat(it.next(), is(new Token(PAREN_LEFT, "(")));
-        assertThat(it.next(), is(new Token(NUMBER, "10")));
-        assertThat(it.next(), is(new Token(OP_PLUS, "+")));
-        assertThat(it.next(), is(new Token(NUMBER, "2")));
-        assertThat(it.next(), is(new Token(PAREN_RIGHT, ")")));
-        assertThat(it.next(), is(new Token(OP_MULTI, "*")));
-        assertThat(it.next(), is(new Token(PAREN_LEFT, "(")));
-        assertThat(it.next(), is(new Token(NUMBER, "5")));
-        assertThat(it.next(), is(new Token(OP_MINUS, "-")));
-        assertThat(it.next(), is(new Token(NUMBER, "3")));
-        assertThat(it.next(), is(new Token(OP_DIV, "/")));
-        assertThat(it.next(), is(new Token(NUMBER, "3")));
-        assertThat(it.next(), is(new Token(PAREN_RIGHT, ")")));
-        assertThat(it.hasNext(), is(false));
+        assertTrue(it.hasNext());
+        assertEquals(new Token(PAREN_LEFT, "("), it.next());
+        assertEquals(new Token(NUMBER, "10"), it.next());
+        assertEquals(new Token(OP_PLUS, "+"), it.next());
+        assertEquals(new Token(NUMBER, "2"), it.next());
+        assertEquals(new Token(PAREN_RIGHT, ")"), it.next());
+        assertEquals(new Token(OP_MULTI, "*"), it.next());
+        assertEquals(new Token(PAREN_LEFT, "("), it.next());
+        assertEquals(new Token(NUMBER, "5"), it.next());
+        assertEquals(new Token(OP_MINUS, "-"), it.next());
+        assertEquals(new Token(NUMBER, "3"), it.next());
+        assertEquals(new Token(OP_DIV, "/"), it.next());
+        assertEquals(new Token(NUMBER, "3"), it.next());
+        assertEquals(new Token(PAREN_RIGHT, ")"), it.next());
+        assertFalse(it.hasNext());
     }
 }

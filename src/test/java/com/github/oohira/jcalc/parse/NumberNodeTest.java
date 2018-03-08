@@ -1,37 +1,37 @@
 package com.github.oohira.jcalc.parse;
 
 import com.github.oohira.jcalc.token.Token;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static com.github.oohira.jcalc.token.TokenType.NUMBER;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * {@link NumberNode} のテストクラス.
  */
-public class NumberNodeTest {
+class NumberNodeTest {
 
     @Test
-    public void zero() {
+    void zero() {
         Token token = new Token(NUMBER, "0");
         NumberNode n = new NumberNode(token);
-        assertThat(n.getValue(), is(BigDecimal.ZERO));
+        assertEquals(BigDecimal.ZERO, n.getValue());
     }
 
     @Test
-    public void one() {
+    void one() {
         Token token = new Token(NUMBER, "1.0");
         NumberNode n = new NumberNode(token);
-        assertThat(n.getValue(), is(new BigDecimal("1.0")));
+        assertEquals(new BigDecimal("1.0"), n.getValue());
     }
 
     @Test
-    public void pi() {
+    void pi() {
         Token token = new Token(NUMBER, "3.14159");
         NumberNode n = new NumberNode(token);
-        assertThat(n.getValue(), is(new BigDecimal("3.14159")));
+        assertEquals(new BigDecimal("3.14159"), n.getValue());
     }
 }

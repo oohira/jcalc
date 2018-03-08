@@ -1,201 +1,200 @@
 package com.github.oohira.jcalc.parse;
 
 import com.github.oohira.jcalc.token.Tokenizer;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
 import static com.github.oohira.jcalc.token.TokenType.*;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * {@link Parser} のテストクラス.
  */
-public class ParserTest {
+class ParserTest {
 
     @Test
-    public void parseNumber() {
+    void parseNumber() {
         Tokenizer tokenizer = new Tokenizer("1");
         Parser parser = new Parser(tokenizer);
 
         NumberNode n = (NumberNode) parser.parse();
-        assertThat(n.getValue(), is(new BigDecimal("1")));
+        assertEquals(new BigDecimal("1"), n.getValue());
     }
 
     @Test
-    public void parseString() {
+    void parseString() {
         Tokenizer tokenizer = new Tokenizer("\"Hello\"");
         Parser parser = new Parser(tokenizer);
 
         StringNode n = (StringNode) parser.parse();
-        assertThat(n.getValue(), is("Hello"));
+        assertEquals("Hello", n.getValue());
     }
 
     @Test
-    public void parseAddition() {
+    void parseAddition() {
         Tokenizer tokenizer = new Tokenizer("0 + 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_PLUS));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_PLUS, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseAdditionSubtraction() {
+    void parseAdditionSubtraction() {
         Tokenizer tokenizer = new Tokenizer("10 + 2 - 5");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_MINUS));
-        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
-        assertThat(toNumber(n.getRightOperand()), is(new BigDecimal("5")));
+        assertEquals(OP_MINUS, n.getOperator());
+        assertTrue(n.getLeftOperand() instanceof BinaryOpNode);
+        assertEquals(new BigDecimal("5"), toNumber(n.getRightOperand()));
 
         BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
-        assertThat(left.getOperator(), is(OP_PLUS));
-        assertThat(toNumber(left.getLeftOperand()), is(new BigDecimal("10")));
-        assertThat(toNumber(left.getRightOperand()), is(new BigDecimal("2")));
+        assertEquals(OP_PLUS, left.getOperator());
+        assertEquals(new BigDecimal("10"), toNumber(left.getLeftOperand()));
+        assertEquals(new BigDecimal("2"), toNumber(left.getRightOperand()));
     }
 
     @Test
-    public void parseMultiplication() {
+    void parseMultiplication() {
         Tokenizer tokenizer = new Tokenizer("0 * 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_MULTI));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_MULTI, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseMultiplicationDivision() {
+    void parseMultiplicationDivision() {
         Tokenizer tokenizer = new Tokenizer("10 * 2 / 5");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_DIV));
-        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
-        assertThat(toNumber(n.getRightOperand()), is(new BigDecimal("5")));
+        assertEquals(OP_DIV, n.getOperator());
+        assertTrue(n.getLeftOperand() instanceof BinaryOpNode);
+        assertEquals(new BigDecimal("5"), toNumber(n.getRightOperand()));
 
         BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
-        assertThat(left.getOperator(), is(OP_MULTI));
-        assertThat(toNumber(left.getLeftOperand()), is(new BigDecimal("10")));
-        assertThat(toNumber(left.getRightOperand()), is(new BigDecimal("2")));
+        assertEquals(OP_MULTI, left.getOperator());
+        assertEquals(new BigDecimal("10"), toNumber(left.getLeftOperand()));
+        assertEquals(new BigDecimal("2"), toNumber(left.getRightOperand()));
     }
 
     @Test
-    public void parseAdditionMultiplication() {
+    void parseAdditionMultiplication() {
         // 10 + 2 * 5 + 3
         // -> (+ (+ 10 (* 2 5)) 3)
         Tokenizer tokenizer = new Tokenizer("10 + 2 * 5 + 3");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_PLUS));
-        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
-        assertThat(toNumber(n.getRightOperand()), is(new BigDecimal("3")));
+        assertEquals(OP_PLUS, n.getOperator());
+        assertTrue(n.getLeftOperand() instanceof BinaryOpNode);
+        assertEquals(new BigDecimal("3"), toNumber(n.getRightOperand()));
 
         BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
-        assertThat(left.getOperator(), is(OP_PLUS));
-        assertThat(toNumber(left.getLeftOperand()), is(new BigDecimal("10")));
-        assertThat(left.getRightOperand(), instanceOf(BinaryOpNode.class));
+        assertEquals(OP_PLUS, left.getOperator());
+        assertEquals(new BigDecimal("10"), toNumber(left.getLeftOperand()));
+        assertTrue(left.getRightOperand() instanceof BinaryOpNode);
 
         BinaryOpNode right = (BinaryOpNode) left.getRightOperand();
-        assertThat(right.getOperator(), is(OP_MULTI));
-        assertThat(toNumber(right.getLeftOperand()), is(new BigDecimal("2")));
-        assertThat(toNumber(right.getRightOperand()), is(new BigDecimal("5")));
+        assertEquals(OP_MULTI, right.getOperator());
+        assertEquals(new BigDecimal("2"), toNumber(right.getLeftOperand()));
+        assertEquals(new BigDecimal("5"), toNumber(right.getRightOperand()));
     }
 
     @Test
-    public void parseParentheses() {
+    void parseParentheses() {
         // (10 + 2) * (5 + 3)
         // -> (* (+ 10 2) (+ 5 3))
         Tokenizer tokenizer = new Tokenizer("(10 + 2) * (5 + 3)");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parse();
-        assertThat(n.getOperator(), is(OP_MULTI));
-        assertThat(n.getLeftOperand(), instanceOf(BinaryOpNode.class));
-        assertThat(n.getRightOperand(), instanceOf(BinaryOpNode.class));
+        assertEquals(OP_MULTI, n.getOperator());
+        assertTrue(n.getLeftOperand() instanceof BinaryOpNode);
+        assertTrue(n.getRightOperand() instanceof BinaryOpNode);
 
         BinaryOpNode left = (BinaryOpNode) n.getLeftOperand();
-        assertThat(left.getOperator(), is(OP_PLUS));
-        assertThat(toNumber(left.getLeftOperand()), is(new BigDecimal("10")));
-        assertThat(toNumber(left.getRightOperand()), is(new BigDecimal("2")));
+        assertEquals(OP_PLUS, left.getOperator());
+        assertEquals(new BigDecimal("10"), toNumber(left.getLeftOperand()));
+        assertEquals(new BigDecimal("2"), toNumber(left.getRightOperand()));
 
         BinaryOpNode right = (BinaryOpNode) n.getRightOperand();
-        assertThat(right.getOperator(), is(OP_PLUS));
-        assertThat(toNumber(right.getLeftOperand()), is(new BigDecimal("5")));
-        assertThat(toNumber(right.getRightOperand()), is(new BigDecimal("3")));
+        assertEquals(OP_PLUS, right.getOperator());
+        assertEquals(new BigDecimal("5"), toNumber(right.getLeftOperand()));
+        assertEquals(new BigDecimal("3"), toNumber(right.getRightOperand()));
     }
 
     @Test
-    public void parseEqualCondition() {
+    void parseEqualCondition() {
         Tokenizer tokenizer = new Tokenizer("0 == 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_EQUAL));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_EQUAL, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseNotEqualCondition() {
+    void parseNotEqualCondition() {
         Tokenizer tokenizer = new Tokenizer("0 != 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_NOT_EQUAL));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_NOT_EQUAL, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseLessCondition() {
+    void parseLessCondition() {
         Tokenizer tokenizer = new Tokenizer("0 < 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_LESS));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_LESS, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseLessEqualCondition() {
+    void parseLessEqualCondition() {
         Tokenizer tokenizer = new Tokenizer("0 <= 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_LESS_EQUAL));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_LESS_EQUAL, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseGreaterCondition() {
+    void parseGreaterCondition() {
         Tokenizer tokenizer = new Tokenizer("0 > 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_GREATER));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_GREATER, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     @Test
-    public void parseGreaterEqualCondition() {
+    void parseGreaterEqualCondition() {
         Tokenizer tokenizer = new Tokenizer("0 >= 1");
         Parser parser = new Parser(tokenizer);
 
         BinaryOpNode n = (BinaryOpNode) parser.parseConditionalExpression(tokenizer);
-        assertThat(n.getOperator(), is(OP_GREATER_EQUAL));
-        assertThat(toNumber(n.getLeftOperand()), is(BigDecimal.ZERO));
-        assertThat(toNumber(n.getRightOperand()), is(BigDecimal.ONE));
+        assertEquals(OP_GREATER_EQUAL, n.getOperator());
+        assertEquals(BigDecimal.ZERO, toNumber(n.getLeftOperand()));
+        assertEquals(BigDecimal.ONE, toNumber(n.getRightOperand()));
     }
 
     private BigDecimal toNumber(Node n) {

@@ -1,35 +1,34 @@
 package com.github.oohira.jcalc.parse;
 
 import com.github.oohira.jcalc.token.Token;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import static com.github.oohira.jcalc.token.TokenType.STRING;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * {@link StringNode} のテストクラス.
  */
-public class StringNodeTest {
+class StringNodeTest {
 
     @Test
-    public void empty() {
+    void empty() {
         Token token = new Token(STRING, "");
         StringNode n = new StringNode(token);
-        assertThat(n.getValue(), is(""));
+        assertEquals("", n.getValue());
     }
 
     @Test
-    public void word() {
+    void word() {
         Token token = new Token(STRING, "Hello, World!");
         StringNode n = new StringNode(token);
-        assertThat(n.getValue(), is("Hello, World!"));
+        assertEquals("Hello, World!", n.getValue());
     }
 
     @Test
-    public void quote() {
+    void quote() {
         Token token = new Token(STRING, "\"''\"");
         StringNode n = new StringNode(token);
-        assertThat(n.getValue(), is("\"''\""));
+        assertEquals("\"''\"", n.getValue());
     }
 }
